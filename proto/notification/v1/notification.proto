@@ -1,0 +1,16 @@
+syntax = "proto3";
+package notification.v1;
+
+option go_package = "github.com/example/ai_gateway/notification/v1;notificationv1";
+
+message SendEmailRequest { string to = 1; string template_id = 2; string variables_json = 3; }
+message SendResponse { bool success = 1; }
+message SendSMSRequest { string phone = 1; string template_id = 2; string variables_json = 3; }
+message PushWebsocketRequest { string user_id = 1; string message = 2; }
+
+service NotificationService {
+  rpc SendEmail (SendEmailRequest) returns (SendResponse);
+  rpc SendSMS (SendSMSRequest) returns (SendResponse);
+  rpc PushWebsocket (PushWebsocketRequest) returns (SendResponse);
+}
+

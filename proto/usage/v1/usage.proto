@@ -1,0 +1,22 @@
+syntax = "proto3";
+package usage.v1;
+
+option go_package = "github.com/example/ai_gateway/usage/v1;usagev1";
+
+message IngestEventRequest { string service = 1; string team = 2; string project = 3; string metric = 4; double value = 5; int64 ts = 6; }
+message IngestEventResponse { bool accepted = 1; }
+message GetRealtimeUsageRequest { string scope = 1; string metric = 2; }
+message MetricPoint { int64 ts = 1; double value = 2; }
+message GetRealtimeUsageResponse { repeated MetricPoint points = 1; }
+message SetThresholdRequest { string scope = 1; string metric = 2; double p80 = 3; double p90 = 4; double p100 = 5; }
+message ListAlertsRequest { string scope = 1; }
+message Alert { string id = 1; string message = 2; int64 ts = 3; }
+message ListAlertsResponse { repeated Alert alerts = 1; }
+
+service UsageService {
+  rpc IngestEvent (IngestEventRequest) returns (IngestEventResponse);
+  rpc GetRealtimeUsage (GetRealtimeUsageRequest) returns (GetRealtimeUsageResponse);
+  rpc SetThreshold (SetThresholdRequest) returns (IngestEventResponse);
+  rpc ListAlerts (ListAlertsRequest) returns (ListAlertsResponse);
+}
+

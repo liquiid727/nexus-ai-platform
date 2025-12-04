@@ -1,0 +1,18 @@
+syntax = "proto3";
+package billing.v1;
+
+option go_package = "github.com/example/ai_gateway/billing/v1;billingv1";
+
+message GenerateInvoiceRequest { string subscription_id = 1; string period = 2; }
+message Invoice { string id = 1; string currency = 2; double amount = 3; int64 created_at = 4; }
+message ListInvoicesRequest { string user_id = 1; }
+message ListInvoicesResponse { repeated Invoice invoices = 1; }
+message AttachUsageDetailRequest { string invoice_id = 1; string usage_summary = 2; }
+message AttachUsageDetailResponse { bool attached = 1; }
+
+service BillingService {
+  rpc GenerateInvoice (GenerateInvoiceRequest) returns (Invoice);
+  rpc ListInvoices (ListInvoicesRequest) returns (ListInvoicesResponse);
+  rpc AttachUsageDetail (AttachUsageDetailRequest) returns (AttachUsageDetailResponse);
+}
+

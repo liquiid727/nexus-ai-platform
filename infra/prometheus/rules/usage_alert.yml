@@ -1,0 +1,19 @@
+groups:
+  - name: usage-thresholds
+    rules:
+      - alert: Usage80Percent
+        expr: usage_ratio >= 0.8 and usage_ratio < 0.9
+        for: 5m
+        labels: { severity: warning }
+        annotations: { summary: "用量达到80%阈值", description: "请考虑升级或优化" }
+      - alert: Usage90Percent
+        expr: usage_ratio >= 0.9 and usage_ratio < 1.0
+        for: 5m
+        labels: { severity: critical }
+        annotations: { summary: "用量达到90%阈值", description: "请尽快处理" }
+      - alert: Usage100Percent
+        expr: usage_ratio >= 1.0
+        for: 1m
+        labels: { severity: critical }
+        annotations: { summary: "用量达到100%阈值", description: "已触发限流或停用策略" }
+

@@ -1,0 +1,329 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "AI Gateway",
+    "version": "0.1.0"
+  },
+  "servers": [
+    { "url": "http://localhost:3000" }
+  ],
+  "tags": [ { "name": "快速体验" } ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "tags": ["快速体验"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "status": { "type": "string" } }
+                },
+                "examples": {
+                  "ok": { "value": { "status": "ok" } }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/version": {
+      "get": {
+        "summary": "Version",
+        "tags": ["快速体验"],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "version": { "type": "string" } }
+                },
+                "examples": {
+                  "ok": { "value": { "version": "0.1.0" } }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/register-email": {
+      "post": {
+        "summary": "Register by email",
+        "tags": ["快速体验"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": { "email": { "type": "string" }, "password": { "type": "string" } },
+                "required": ["email", "password"]
+              }
+            ,
+              "examples": {
+                "sample": {
+                  "summary": "示例请求",
+                  "value": { "email": "user@example.com", "password": "Passw0rd!" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object", "properties": { "user_id": { "type": "string" } } }
+              }
+            }
+          },
+          "400": {
+            "description": "invalid_input",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "invalid_input": { "value": { "error": "invalid_input" } } } } }
+          },
+          "409": {
+            "description": "email_exists",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "email_exists": { "value": { "error": "email_exists" } } } } }
+          }
+        }
+      }
+    },
+    "/auth/verify-email": {
+      "get": {
+        "summary": "Verify email",
+        "tags": ["快速体验"],
+        "parameters": [
+          { "name": "token", "in": "query", "required": true, "schema": { "type": "string" }, "example": "sample-token" }
+        ],
+        "responses": {
+          "200": { "description": "OK" },
+          "400": { "description": "invalid_token", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "invalid_token": { "value": { "error": "invalid_token" } } } } } },
+          "404": { "description": "not_found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "not_found": { "value": { "error": "not_found" } } } } } }
+        }
+      }
+    },
+    "/auth/issue-token": {
+      "post": {
+        "summary": "Issue JWT token",
+        "tags": ["快速体验"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": { "email": { "type": "string" }, "password": { "type": "string" }, "otp": { "type": "string" } },
+                "required": ["email", "password"]
+              }
+            ,
+              "examples": {
+                "password_only": {
+                  "summary": "邮箱+密码",
+                  "value": { "email": "user@example.com", "password": "Passw0rd!" }
+                },
+                "with_otp": {
+                  "summary": "启用2FA时",
+                  "value": { "email": "user@example.com", "password": "Passw0rd!", "otp": "123456" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "access_token": { "type": "string" },
+                    "refresh_token": { "type": "string" },
+                    "expires_in": { "type": "integer" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "invalid_input", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "invalid_input": { "value": { "error": "invalid_input" } } } } } },
+          "401": { "description": "invalid_credentials | invalid_otp", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "invalid_credentials": { "value": { "error": "invalid_credentials" } }, "invalid_otp": { "value": { "error": "invalid_otp" } } } } } },
+          "403": { "description": "email_unverified", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "email_unverified": { "value": { "error": "email_unverified" } } } } } },
+          "404": { "description": "not_found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "not_found": { "value": { "error": "not_found" } } } } } }
+        }
+      }
+    },
+    "/auth/sessions": {
+      "get": {
+        "summary": "List sessions",
+        "tags": ["快速体验"],
+        "parameters": [
+          { "name": "user_id", "in": "query", "required": true, "schema": { "type": "string" }, "example": "00000000-0000-0000-0000-000000000000" }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "sessions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "string" },
+                          "device": { "type": "string" },
+                          "login_time": { "type": "integer" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "invalid_input", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "invalid_input": { "value": { "error": "invalid_input" } } } } } }
+        }
+      }
+    },
+    "/auth/register-phone": {
+      "post": {
+        "summary": "Register by phone",
+        "tags": ["快速体验"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": { "phone": { "type": "string" } },
+                "required": ["phone"]
+              }
+            ,
+              "examples": {
+                "sample": {
+                  "summary": "示例请求",
+                  "value": { "phone": "13800138000" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Created" },
+          "400": { "description": "invalid_input", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "invalid_input": { "value": { "error": "invalid_input" } } } } } },
+          "409": { "description": "phone_exists", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "phone_exists": { "value": { "error": "phone_exists" } } } } } }
+        }
+      }
+    },
+    "/auth/verify-sms": {
+      "post": {
+        "summary": "Verify SMS code",
+        "tags": ["快速体验"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": { "phone": { "type": "string" }, "code": { "type": "string" } },
+                "required": ["phone", "code"]
+              }
+            ,
+              "examples": {
+                "sample": {
+                  "summary": "示例请求",
+                  "value": { "phone": "13800138000", "code": "123456" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OK" },
+          "400": { "description": "invalid_input", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "invalid_input": { "value": { "error": "invalid_input" } } } } } },
+          "401": { "description": "invalid_code", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "invalid_code": { "value": { "error": "invalid_code" } } } } } }
+        }
+      }
+    },
+    "/auth/enable-2fa": {
+      "post": {
+        "summary": "Enable TOTP 2FA",
+        "tags": ["快速体验"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": { "user_id": { "type": "string" } },
+                "required": ["user_id"]
+              }
+            ,
+              "examples": {
+                "sample": {
+                  "summary": "示例请求",
+                  "value": { "user_id": "00000000-0000-0000-0000-000000000000" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OK" },
+          "400": { "description": "invalid_input", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "invalid_input": { "value": { "error": "invalid_input" } } } } } },
+          "404": { "description": "not_found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "not_found": { "value": { "error": "not_found" } } } } } }
+        }
+      }
+    },
+    "/auth/verify-2fa": {
+      "post": {
+        "summary": "Verify TOTP 2FA",
+        "tags": ["快速体验"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": { "user_id": { "type": "string" }, "token": { "type": "string" } },
+                "required": ["user_id", "token"]
+              }
+            ,
+              "examples": {
+                "sample": {
+                  "summary": "示例请求",
+                  "value": { "user_id": "00000000-0000-0000-0000-000000000000", "token": "123456" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "OK" },
+          "400": { "description": "invalid_input", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "invalid_input": { "value": { "error": "invalid_input" } } } } } },
+          "401": { "description": "invalid_otp", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "invalid_otp": { "value": { "error": "invalid_otp" } } } } } },
+          "404": { "description": "not_found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" }, "examples": { "not_found": { "value": { "error": "not_found" } } } } } }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "properties": { "error": { "type": "string" } },
+        "required": ["error"]
+      }
+    }
+  }
+}

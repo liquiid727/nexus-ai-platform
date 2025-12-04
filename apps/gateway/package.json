@@ -1,0 +1,16 @@
+{
+  "name": "gateway",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "helmet": "^7.0.0",
+    "swagger-ui-express": "^5.0.0",
+    "http-proxy-middleware": "^3.0.0"
+  }
+}

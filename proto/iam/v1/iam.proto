@@ -1,0 +1,29 @@
+syntax = "proto3";
+package iam.v1;
+
+option go_package = "github.com/example/ai_gateway/iam/v1;iamv1";
+
+message RegisterEmailRequest { string email = 1; string password = 2; }
+message RegisterEmailResponse { string user_id = 1; }
+message VerifyEmailRequest { string token = 1; }
+message VerifyEmailResponse { bool success = 1; }
+message RegisterPhoneRequest { string phone = 1; }
+message VerifySMSRequest { string phone = 1; string code = 2; }
+message OAuthLoginRequest { string provider = 1; string code = 2; }
+message TokenResponse { string access_token = 1; string refresh_token = 2; int64 expires_in = 3; }
+message Enable2FARequest { string user_id = 1; }
+message ListSessionsRequest { string user_id = 1; }
+message Session { string id = 1; string device = 2; int64 login_time = 3; }
+message ListSessionsResponse { repeated Session sessions = 1; }
+
+service AuthService {
+  rpc RegisterEmail (RegisterEmailRequest) returns (RegisterEmailResponse);
+  rpc VerifyEmail (VerifyEmailRequest) returns (VerifyEmailResponse);
+  rpc RegisterPhone (RegisterPhoneRequest) returns (VerifyEmailResponse);
+  rpc VerifySMS (VerifySMSRequest) returns (VerifyEmailResponse);
+  rpc OAuthLogin (OAuthLoginRequest) returns (TokenResponse);
+  rpc IssueToken (OAuthLoginRequest) returns (TokenResponse);
+  rpc Enable2FA (Enable2FARequest) returns (VerifyEmailResponse);
+  rpc ListSessions (ListSessionsRequest) returns (ListSessionsResponse);
+}
+

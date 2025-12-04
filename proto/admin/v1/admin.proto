@@ -1,0 +1,13 @@
+syntax = "proto3";
+package admin.v1;
+
+option go_package = "github.com/example/ai_gateway/admin/v1;adminv1";
+
+message ListAuditLogsRequest { string scope = 1; int64 from = 2; int64 to = 3; }
+message AuditLog { string id = 1; string actor = 2; string action = 3; int64 ts = 4; }
+message ListAuditLogsResponse { repeated AuditLog logs = 1; }
+
+service AdminService {
+  rpc ListAuditLogs (ListAuditLogsRequest) returns (ListAuditLogsResponse);
+}
+

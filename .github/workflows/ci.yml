@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  buf-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Buf
+        uses: bufbuild/buf-setup-action@v1.28.1
+      - name: Lint Proto
+        run: buf lint proto
+
+  basic-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Tree
+        run: |
+          echo "Repository structure:" && ls -R
+  iam-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install IAM deps
+        run: |
+          cd services/iam
+          npm ci
+      - name: Run tests (DB-optional)
+        env:
+          SKIP_DB_TESTS: '1'
+        run: |
+          cd services/iam
+          npm test -- --ci --reporters=default

@@ -1,0 +1,15 @@
+syntax = "proto3";
+package api.v1;
+
+option go_package = "github.com/example/ai_gateway/api/v1;apiv1";
+
+message IssueKeyRequest { string user_id = 1; string scope = 2; }
+message ApiKey { string id = 1; string token = 2; int64 created_at = 3; }
+message SetPolicyRequest { string policy_id = 1; string rules = 2; }
+message SetPolicyResponse { bool ok = 1; }
+
+service ApiPortalService {
+  rpc IssueKey (IssueKeyRequest) returns (ApiKey);
+  rpc SetPolicy (SetPolicyRequest) returns (SetPolicyResponse);
+}
+

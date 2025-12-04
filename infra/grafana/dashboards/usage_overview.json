@@ -1,0 +1,13 @@
+{
+  "title": "Usage Overview",
+  "uid": "usage-overview",
+  "timezone": "browser",
+  "panels": [
+    {"type": "graph", "title": "API Calls (per minute)", "targets": [{"expr": "sum(rate(api_calls_total[5m]))"}]},
+    {"type": "graph", "title": "Compute Time (seconds)", "targets": [{"expr": "sum(rate(compute_seconds_total[5m]))"}]},
+    {"type": "graph", "title": "Storage Usage (GB)", "targets": [{"expr": "sum(storage_usage_gb)"}]},
+    {"type": "stat", "title": "Cost (by service)", "targets": [{"expr": "sum by(service) (cost_total)"}]}
+  ],
+  "templating": {"list": []}
+}
+
