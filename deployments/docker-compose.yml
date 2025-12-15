@@ -1,0 +1,27 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: next-ai-db
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+    ports:
+      - "${DB_PORT}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      # Mount initialization scripts
+      # Numbers prefix ensures execution order: 01 runs before 02
+      - ../docs/init.sql:/docker-entrypoint-initdb.d/01_init.sql
+      - ../docs/seed.sql:/docker-entrypoint-initdb.d/02_seed.sql
+    env_file:
+      - ../.env
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql_data:

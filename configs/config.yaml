@@ -1,0 +1,23 @@
+server:
+  port: 8080
+  mode: dev
+
+database:
+  driver: mysql
+  host: 127.0.0.1
+  port: 3306
+  username: root
+  password: password
+  database: next_ai_gateway
+  max_idle_conns: 10
+  max_open_conns: 100
+  conn_max_lifetime: 3600
+
+logger:
+  level: debug
+  filename: "logs/app.log"
+  max_size: 10
+  max_age: 30
+  max_backups: 5
+  compress: true
+  console: true

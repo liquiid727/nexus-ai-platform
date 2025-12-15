@@ -1,0 +1,23 @@
+# Binaries
+bin/
+*.exe
+*.dll
+
+# Environment
+.env
+.env.local
+
+# Logs
+logs/
+*.log
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test
+coverage.out
