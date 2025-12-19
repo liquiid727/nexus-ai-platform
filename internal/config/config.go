@@ -12,7 +12,7 @@ import (
 type Config struct {
 	Server   ServerConfig    `mapstructure:"server"`
 	Database database.Config `mapstructure:"database"`
-	Logger   logger.Config   `mapstructure:"logger"`
+	Logger   logger.Logger   `mapstructure:"logger"`
 }
 
 type ServerConfig struct {

@@ -25,8 +25,8 @@ func main() {
 		port = 8080
 	}
 
-	logger.Log.Info("Starting server", zap.Int("port", port))
+	logger.Infow("Starting server", zap.Int("port", port))
 	if err := e.Start(fmt.Sprintf(":%d", port)); err != nil {
-		logger.Log.Fatal("Server start failed", zap.Error(err))
+		logger.Fatalw("Server start failed", zap.Error(err))
 	}
 }

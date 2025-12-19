@@ -18,8 +18,8 @@ func Init(configPath string) (*echo.Echo, error) {
 	}
 
 	// 2. Init Logger
-	logger.Init(&config.GlobalConfig.Logger)
-	logger.Log.Info("Logger initialized")
+	logger.Init(logger.NewOptions())
+	defer logger.Sync()
 
 	// 3. Init Database
 	if err := database.Init(&config.GlobalConfig.Database); err != nil {
@@ -27,9 +27,9 @@ func Init(configPath string) (*echo.Echo, error) {
 		// or at least we should log it.
 		// For the purpose of verification, if DB fails (e.g. no mysql running), we might fail.
 		// However, to allow user to run without DB for testing health check, we can just log error.
-		logger.Log.Error("Failed to connect to database", zap.Error(err))
+		logger.Errorw("Failed to connect to database", zap.Error(err))
 	} else {
-		logger.Log.Info("Database initialized")
+		logger.Infow("Database initialized")
 	}
 
 	// 4. Init Echo
