@@ -1,7 +1,7 @@
 package manager
 
 import (
-	"next-ai-gateway/internal/model"
+	"next-ai-gateway/internal/repository/entity"
 
 	"github.com/golang-jwt/jwt/v4"
 	"go.uber.org/zap"
@@ -18,7 +18,7 @@ func NewGatewayTokenManager(signingKey []byte, logger *zap.Logger) *GatewayToken
 		logger:     logger,
 	}
 }
-func (m *GatewayTokenManager) GenerateToken(userInfo model.UserInfo) (string, error) {
+func (m *GatewayTokenManager) GenerateToken(userInfo entity.User) (string, error) {
 	// 生成token
 	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":       userInfo.ID,

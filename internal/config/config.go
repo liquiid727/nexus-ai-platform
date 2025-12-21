@@ -3,16 +3,19 @@ package config
 import (
 	"fmt"
 	"next-ai-gateway/pkg/database"
-	"next-ai-gateway/pkg/logger"
+	"next-ai-gateway/internal/pkg/logger"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
 
 type Config struct {
-	Server   ServerConfig    `mapstructure:"server"`
-	Database database.Config `mapstructure:"database"`
-	Logger   logger.Logger   `mapstructure:"logger"`
+	Server    ServerConfig    `mapstructure:"server"`
+	Database  database.Config `mapstructure:"database"`
+	Logger    logger.Options  `mapstructure:"logger"`
+	JWTSecret string          `mapstructure:"jwt_secret"`
+	JWTExpiry int64           `mapstructure:"jwt_expiry"`
+	RedisURL  string          `mapstructure:"redis_url"`
 }
 
 type ServerConfig struct {
@@ -34,6 +37,9 @@ func LoadConfig(path string) error {
 	viper.BindEnv("database.password", "DB_PASSWORD")
 	viper.BindEnv("database.database", "DB_NAME")
 	viper.BindEnv("server.port", "SERVER_PORT")
+	viper.BindEnv("jwt_secret", "JWT_SECRET")
+	viper.BindEnv("jwt_expiry", "JWT_EXPIRY")
+	viper.BindEnv("redis_url", "REDIS_URL")
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {

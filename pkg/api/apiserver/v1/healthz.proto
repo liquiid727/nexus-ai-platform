@@ -1,0 +1,21 @@
+syntax = "proto3";
+package grpc;
+
+option go_package = "github.com/next-ai/next-ai-gate-way/internal/apiserver/handler/grpc"
+import "google/protobuf/empty.proto"
+import "apiserver/v1/healthz.proto"
+
+
+enum ServiceStatus{
+	Healthy = 0;
+	Unhealthy = 1;
+}
+message HeadlthReponse{
+	ServiceStatus status = 1;
+	string timestamp = 2;
+	string message = 3;
+}
+
+
+
+

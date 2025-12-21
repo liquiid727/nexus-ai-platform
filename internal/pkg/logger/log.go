@@ -72,6 +72,12 @@ func New(opts *Options) *zapLogger {
 		enc.AppendFloat64(float64(d) / float64(time.Millisecond))
 	}
 
+	if opts.Format == "" {
+		opts.Format = "console"
+	}
+	if len(opts.OutputPaths) == 0 {
+		opts.OutputPaths = []string{"stdout"}
+	}
 	// 创建构建 zap.Logger 需要的配置
 	cfg := &zap.Config{
 		// 是否在日志中显示调用日志所在的文件和行号，例如：`"caller":"miniblog/miniblog.go:75"`

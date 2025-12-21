@@ -3,9 +3,9 @@ package app
 import (
 	"fmt"
 	"next-ai-gateway/internal/config"
+	"next-ai-gateway/internal/pkg/logger"
 	"next-ai-gateway/internal/router"
 	"next-ai-gateway/pkg/database"
-	"next-ai-gateway/pkg/logger"
 
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
@@ -18,7 +18,7 @@ func Init(configPath string) (*echo.Echo, error) {
 	}
 
 	// 2. Init Logger
-	logger.Init(logger.NewOptions())
+	logger.Init(&config.GlobalConfig.Logger)
 	defer logger.Sync()
 
 	// 3. Init Database

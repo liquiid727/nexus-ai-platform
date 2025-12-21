@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"next-ai-gateway/internal/app"
 	"next-ai-gateway/internal/config"
-	"next-ai-gateway/pkg/logger"
+	"next-ai-gateway/internal/pkg/logger"
 
 	"go.uber.org/zap"
 )
