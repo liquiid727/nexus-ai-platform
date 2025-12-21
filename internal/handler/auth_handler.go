@@ -20,6 +20,16 @@ func NewAuthHandler(service *service.AuthService) *AuthHandler {
 }
 
 // RegisterAccount 账号密码注册
+// @Summary 账号密码注册
+// @Description 账号密码注册
+// @Tags 认证
+// @Accept json
+// @Produce json
+// @Param request body dto.RegisterAccountRequest true "注册请求参数"
+// @Success 201 {object} map[string]interface{} "注册成功"
+// @Failure 400 {object} errors.ErrorX "请求参数错误"
+// @Failure 500 {object} errors.ErrorX "内部服务器错误"
+// @Router /auth/register [post]
 func (h *AuthHandler) RegisterAccount(c echo.Context) error {
 	req := new(dto.RegisterAccountRequest)
 	if err := c.Bind(req); err != nil {
@@ -39,7 +49,7 @@ func (h *AuthHandler) RegisterAccount(c echo.Context) error {
 		if errX, ok := err.(*errors.ErrorX); ok {
 			return c.JSON(errX.Code, errX)
 		}
-		return c.JSON(http.StatusInternalServerError, errors.New(500, "Internal Server Error", err.Error()))
+		return c.JSON(http.StatusInternalServerError, errors.New(500, "Internal Server Error", "%s", err.Error()))
 	}
 
 	return c.JSON(http.StatusCreated, map[string]interface{}{
@@ -66,7 +76,7 @@ func (h *AuthHandler) LoginAccount(c echo.Context) error {
 		if errX, ok := err.(*errors.ErrorX); ok {
 			return c.JSON(errX.Code, errX)
 		}
-		return c.JSON(http.StatusInternalServerError, errors.New(500, "Internal Server Error", err.Error()))
+		return c.JSON(http.StatusInternalServerError, errors.New(500, "Internal Server Error", "%s", err.Error()))
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
@@ -93,7 +103,7 @@ func (h *AuthHandler) RefreshToken(c echo.Context) error {
 		if errX, ok := err.(*errors.ErrorX); ok {
 			return c.JSON(errX.Code, errX)
 		}
-		return c.JSON(http.StatusInternalServerError, errors.New(500, "Internal Server Error", err.Error()))
+		return c.JSON(http.StatusInternalServerError, errors.New(500, "Internal Server Error", "%s", err.Error()))
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
@@ -118,7 +128,7 @@ func (h *AuthHandler) GetProfile(c echo.Context) error {
 		if errX, ok := err.(*errors.ErrorX); ok {
 			return c.JSON(errX.Code, errX)
 		}
-		return c.JSON(http.StatusInternalServerError, errors.New(500, "Internal Server Error", err.Error()))
+		return c.JSON(http.StatusInternalServerError, errors.New(500, "Internal Server Error", "%s", err.Error()))
 	}
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
